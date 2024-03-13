@@ -19,7 +19,6 @@ from django.urls import path,include
 from schema_graph.views import Schema
 
 urlpatterns = [
-    path('fake-admin/', include('admin_honeypot.urls'),name='admin_honeypot'),
     path('admin/', admin.site.urls),
     path('schema/',Schema.as_view()),
     path('', include('guide.urls'))
