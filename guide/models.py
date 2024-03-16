@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 from .helpers import encrypt_data
 
 # Create your models here.
@@ -140,3 +143,65 @@ People.editors.all()
 
 # This will return all person whose role is either author or editor
 Person.objects.all()
+
+
+# How to use related_name 
+
+class Address(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    address = models.TextField(max_length=500)
+    
+    
+# the default related_name should be 
+
+""" user = models.ForeignKey(User,on_delete=models.CASCADE, related_name='address_set') """
+
+# how to override the default related_name
+
+""" user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_address')"""
+
+# Validators
+
+# Here MinValueValidator is Django's Built-in validator
+class Things(models.Model):
+    count = models.PositiveIntegerField(validators=[MinValueValidator])
+    
+
+# create a custom validator
+
+def validate_even(value: int) -> None:
+    """
+    Validates that the input value is an even number.
+
+    Args:
+        value (int): The value to be validated.
+
+    Raises:
+        ValidationError: If the value is not an even number.
+
+    """
+    if value % 2!= 0:
+        raise ValidationError(
+            _("Value must be a even number"), code="invalid"
+        )
+
+
+class Stuff(models.Model):
+    count = models.PositiveIntegerField(validators=[validate_even])
+    
+    
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        abstract = True
+        
+        
+class PythonModel(BaseModel):
+    language = models.CharField(max_length=50)
+    version = models.DecimalField(decimal_places=3,max_digits=3)
+    
+    class Meta:
+        verbose_name_plural = _('Python')
+        ordering = ['-created_at']

@@ -1,10 +1,11 @@
-from django.http import JsonResponse
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render
 from django.contrib.messages import constants as messages_constants
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+from django.db.models import QuerySet
 from .api import critical
-from .models import BankAccount, BankDetails, Book, Student
+from .models import Address, BankAccount, BankDetails, Book, Student
 from .helpers import decrypt_data
 
 # Create your views here.
@@ -208,3 +209,38 @@ def my_nested_transaction():
         # perform nested transactions
         stu2 = Student.objects.create(name="John Doe")
    
+   
+# here address_set is default related_name
+def address(request : HttpRequest) -> QuerySet[Address]:
+    """
+    Returns a list of all the addresses associated with the currently logged in user.
+
+    Parameters:
+        request (HttpRequest): The incoming request object.
+
+    Returns:
+        A list of all the addresses associated with the currently logged in user.
+
+    """
+    user_address = request.user.address_set.all()
+    return user_address
+    
+# related_name override 
+
+
+def address_override(request: HttpRequest) -> QuerySet[Address]:
+    """
+    Returns a list of all the addresses associated with the currently logged in user.
+
+    Parameters:
+        request (HttpRequest): The incoming request object.
+
+    Returns:
+        A list of all the addresses associated with the currently logged in user.
+
+    """
+    user_address = request.user.address_set.all()
+    return user_address
+
+
+

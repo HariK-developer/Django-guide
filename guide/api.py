@@ -18,5 +18,5 @@ def critical(request, message, extra_tags="", fail_silently=False):
 
 @api.get("/")
 def add(request):
-    return {"message":"Hello World"}
+    return {"message":"Hello World","session": request.session.get('sessionid',"no value")}
 
