@@ -231,5 +231,4 @@ class Enrollment(models.Model):
         unique_together = ('student_name','course_name') # This attribute define the the two fields combination must be unique for every row
         
         
-
         
