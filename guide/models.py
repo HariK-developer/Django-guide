@@ -205,3 +205,31 @@ class PythonModel(BaseModel):
     class Meta:
         verbose_name_plural = _('Python')
         ordering = ['-created_at']
+        app_label = 'guide' # This attribute is used to define which app this model belongs to
+        db_table_comment = "student data records"  # it's useful for documenting database tables
+        default_permissions = ('add','change','delete','view')
+        
+        
+class Team(models.Model):
+    name =  models.CharField(max_length=100)
+
+
+class Player(models.Model):
+    name = models.CharField(max_length=100)
+    team = models.ForeignKey(Team,on_delete=models.CASCADE) 
+    
+    class Meta:
+        order_with_respect_to = 'team'   # when we retrieve the the Player model it's ordering respect to the Team model
+        
+        
+class Enrollment(models.Model):
+    student_name = models.CharField(max_length=200)
+    course_name = models.CharField(max_length=200)
+    enrollment_date = models.DateField()
+    
+    class Meta:
+        unique_together = ('student_name','course_name') # This attribute define the the two fields combination must be unique for every row
+        
+        
+
+        
